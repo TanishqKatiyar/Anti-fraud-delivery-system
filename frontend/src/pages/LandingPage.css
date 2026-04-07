@@ -1,0 +1,223 @@
+/* LandingPage.css */
+
+.landing {
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Header */
+.landing-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 40px;
+  background: rgba(6, 9, 18, 0.8);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+
+.landing-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.logo-icon { font-size: 1.4rem; }
+
+.header-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+}
+
+/* Hero */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 120px 40px 80px;
+  text-align: center;
+}
+
+.node-graph {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 760px;
+}
+
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.hero-title {
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 24px;
+  letter-spacing: -0.03em;
+}
+
+.hero-gradient {
+  background: linear-gradient(135deg, var(--cyan) 0%, var(--jade) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-subtitle {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: 40px;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.hero-error {
+  margin-top: 20px;
+  padding: 12px 20px;
+  background: var(--red-glow);
+  border: 1px solid rgba(255, 69, 84, 0.3);
+  border-radius: var(--radius-sm);
+  color: var(--red);
+  font-size: 0.875rem;
+}
+
+/* Roles */
+.roles-section {
+  padding: 80px 40px;
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.roles-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+@media (max-width: 900px) {
+  .roles-grid { grid-template-columns: 1fr; }
+}
+
+.role-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  cursor: pointer;
+  transition: all var(--duration-std) var(--ease-out);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.role-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lift);
+}
+
+.role-card--cyan:hover { border-color: var(--cyan); box-shadow: var(--shadow-lift), var(--shadow-cyan); }
+.role-card--jade:hover { border-color: var(--jade); box-shadow: var(--shadow-lift), var(--shadow-jade); }
+.role-card--amber:hover { border-color: var(--amber); box-shadow: var(--shadow-lift), 0 0 40px rgba(245,158,11,0.12); }
+
+.role-icon { font-size: 2.5rem; }
+
+.role-meta h3 { font-size: 1.25rem; margin-bottom: 4px; }
+.role-subtitle { font-size: 0.8125rem; color: var(--text-secondary); }
+.role-desc { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.6; flex: 1; }
+
+/* Features */
+.features-section {
+  padding: 80px 40px;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 900px) {
+  .features-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 500px) {
+  .features-grid { grid-template-columns: 1fr; }
+}
+
+.feature-card {
+  padding: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.feature-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.feature-label {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  margin-bottom: 4px;
+  font-family: var(--font-heading);
+}
+
+.feature-desc {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* Footer */
+.landing-footer {
+  padding: 32px 40px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footer-links {
+  display: flex;
+  gap: 10px;
+}
+
+@media (max-width: 600px) {
+  .landing-footer { flex-direction: column; gap: 12px; text-align: center; }
+}

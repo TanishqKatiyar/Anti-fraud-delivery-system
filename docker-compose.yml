@@ -1,0 +1,81 @@
+version: "3.9"
+
+services:
+  # ── MongoDB ──────────────────────────────────────────────────────────────
+  mongo:
+    image: mongo:7
+    container_name: chainguard-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.runCommand({ping:1})"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Backend Core (Node.js) ────────────────────────────────────────────────
+  backend:
+    build: ./backend-core
+    container_name: chainguard-backend
+    ports:
+      - "5001:5000"
+    depends_on:
+      mongo:
+        condition: service_healthy
+    environment:
+      PORT: 5000
+      MONGO_URI: mongodb://mongo:27017/anti_fraud_supply
+      JWT_SECRET: demo_jwt_secret_docker
+      QR_HMAC_SECRET: demo_hmac_secret_docker
+      AI_SERVICE_URL: http://ai-service:8000
+      DEMO_MODE: "true"
+      NODE_ENV: production
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:5000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Database Seeder (runs once then exits) ─────────────────────────────────
+  seeder:
+    build: ./backend-core
+    container_name: chainguard-seeder
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      MONGO_URI: mongodb://mongo:27017/anti_fraud_supply
+      DEMO_MODE: "true"
+    command: node src/scripts/seed.js
+    restart: "no"
+
+  # ── AI Vision Service (Python / FastAPI) ──────────────────────────────────
+  ai-service:
+    build: ./ai-vision-service
+    container_name: chainguard-ai
+    ports:
+      - "8000:8000"
+    environment:
+      PORT: 8000
+      CORE_BACKEND_URL: http://backend:5000
+      DEMO_MODE: "true"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Frontend (React / Nginx) ──────────────────────────────────────────────
+  frontend:
+    build: ./frontend
+    container_name: chainguard-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  mongo_data:

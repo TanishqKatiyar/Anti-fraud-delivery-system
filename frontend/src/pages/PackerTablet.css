@@ -1,0 +1,85 @@
+/* PackerTablet.css */
+
+.packer-page {
+  display: flex;
+  min-height: 100vh;
+}
+
+.packer-start {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.packer-hero {
+  max-width: 480px;
+  text-align: center;
+  width: 100%;
+}
+
+.packer-id-form {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: left;
+}
+
+.packer-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.packer-header {
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.items-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.packer-item {
+  padding: 20px;
+  transition: all var(--duration-std) var(--ease-out);
+}
+
+.packer-item--done {
+  opacity: 0.6;
+  border-color: rgba(0,255,136,0.3) !important;
+  background: rgba(0,255,136,0.03) !important;
+}
+
+.packer-item-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.packer-item-name {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.packer-item-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.seal-section {
+  padding: 40px;
+}
+
+.packed-done {
+  padding: 48px;
+}
