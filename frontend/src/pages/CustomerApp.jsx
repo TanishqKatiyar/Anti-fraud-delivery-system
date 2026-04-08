@@ -8,62 +8,44 @@ import './CustomerApp.css'
 
 const STATUS_STEPS = ['placed', 'packing', 'packed', 'in_transit', 'delivered']
 const STATUS_LABELS = {
-  placed:     { label: 'Order Placed',     icon: '📦', desc: 'Your order is confirmed and being prepared for packing.' },
-  packing:    { label: 'Being Packed',     icon: '🏭', desc: 'Your items are being picked and verified by AI scanner.' },
-  packed:     { label: 'Bag Sealed',       icon: '🔒', desc: 'All items verified. Tamper-proof QR sealed inside the bag.' },
-  in_transit: { label: 'Out for Delivery', icon: '🚚', desc: 'Your delivery partner is on the way.' },
-  delivered:  { label: 'Delivered',        icon: '✅', desc: 'Delivery confirmed via QR scan. Enjoy!' },
+  placed:     { label: 'Order Confirmed',  subtitle: 'We have received your order' },
+  packing:    { label: 'Packing Order',    subtitle: 'Items are being packed at the store' },
+  packed:     { label: 'Bag Sealed',       subtitle: 'Verified by ChainGuard AI' },
+  in_transit: { label: 'On the way',       subtitle: 'Delivery partner is on the way' },
+  delivered:  { label: 'Delivered',        subtitle: 'Handed over successfully' },
 }
 
 function CameraZoneView({ zoneId, streamUrl }) {
   return (
-    <div className="camera-zone">
-      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, #0c1120 0%, #111827 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '3rem', marginBottom: 8 }}>🎥</div>
-          <div style={{ color: 'var(--cyan)', fontFamily: 'var(--font-mono)', fontSize: '0.75rem' }}>LIVE FEED</div>
-          <div style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginTop: 4 }}>{zoneId}</div>
-        </div>
+    <div className="bk-camera-zone">
+      <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
+        <div style={{ fontSize: '2rem' }}>🔴</div>
+        <div style={{ color: '#fff', fontSize: '0.8rem', marginTop: 8, fontWeight: 600 }}>LIVE WAREHOUSE FEED</div>
       </div>
-      <div className="camera-scan-line" />
-      <div className="camera-corner tl" />
-      <div className="camera-corner tr" />
-      <div className="camera-corner bl" />
-      <div className="camera-corner br" />
-      <div className="camera-zone-overlay">
-        <div style={{ padding: '8px 16px', background: 'rgba(0,0,0,0.6)', borderRadius: 6, backdropFilter: 'blur(8px)' }}>
-          <span className="text-mono" style={{ fontSize: '0.75rem', color: 'var(--cyan)' }}>● LIVE · {zoneId}</span>
-        </div>
+      <div style={{ position: 'absolute', bottom: 10, left: 10, padding: '4px 8px', background: 'rgba(0,0,0,0.6)', borderRadius: 4 }}>
+        <span style={{ fontSize: '0.7rem', color: '#00d4ff' }}>● {zoneId}</span>
       </div>
     </div>
   )
 }
 
-function ScanProofCard({ scan, index }) {
+function ScanProofCard({ scan }) {
   const isApproved = scan.scanStatus === 'APPROVED'
   return (
-    <motion.div
-      className={`scan-card ${isApproved ? 'scan-card--approved' : 'scan-card--rejected'}`}
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ delay: index * 0.05 }}
-    >
-      <span className="scan-card-icon">{isApproved ? '✅' : '⚠️'}</span>
-      <div>
-        <div className="scan-card-id">{scan.productId}</div>
-        <div className={`scan-card-status ${isApproved ? 'text-jade' : 'text-red'}`}>
-          {scan.scanStatus.replace(/_/g, ' ')}
-        </div>
-        {scan.scannedAt && (
-          <div className="scan-card-time text-muted text-mono">
-            {new Date(scan.scannedAt).toLocaleTimeString()}
+    <div className="bk-scan-row">
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div className="bk-scan-icon">{isApproved ? '✅' : '⚠️'}</div>
+        <div>
+          <div style={{ fontWeight: 600, fontSize: '0.85rem', color: '#111' }}>{scan.productId}</div>
+          <div style={{ fontSize: '0.75rem', color: isApproved ? '#0e9f6e' : '#e02424' }}>
+            {scan.scanStatus.replace(/_/g, ' ')}
           </div>
-        )}
+        </div>
       </div>
       {scan.proofImageUrl?.startsWith('data:') && (
-        <img src={scan.proofImageUrl} alt="proof" className="scan-card-proof" />
+        <img src={scan.proofImageUrl} alt="proof" className="bk-scan-proof" />
       )}
-    </motion.div>
+    </div>
   )
 }
 
@@ -83,7 +65,6 @@ export default function CustomerApp() {
 
   const { connected, lastEvent } = useSocket(orderId)
 
-  // Load order
   useEffect(() => {
     if (!orderId) return
     setLoading(true)
@@ -102,7 +83,6 @@ export default function CustomerApp() {
       .finally(() => setLoading(false))
   }, [orderId])
 
-  // Handle socket events
   useEffect(() => {
     if (!lastEvent) return
     const { type, data } = lastEvent
@@ -147,239 +127,176 @@ export default function CustomerApp() {
   const stepIndex = order ? STATUS_STEPS.indexOf(order.status) : -1
 
   return (
-    <div className="customer-app">
-      {/* Sidebar */}
-      <aside className="sidebar">
-        <div className="sidebar-logo">
-          <div style={{ fontSize: '1.1rem', fontWeight: 700, fontFamily: 'var(--font-heading)' }}>
-            ⛓️ Chain<span style={{ color: 'var(--cyan)' }}>Guard</span>
+    <div className="customer-app-wrapper">
+      <div className="blinkit-mobile-container">
+        {/* Header */}
+        <header className="blinkit-header">
+          <div className="blinkit-header-top">
+            <div className="blinkit-brand">blinkit</div>
+            <div className="blinkit-time">10 MINS</div>
           </div>
-          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 4 }}>Customer App</div>
-        </div>
-        <nav className="sidebar-nav">
-          <button className="nav-item active">📦 My Order</button>
-          <button className="nav-item" onClick={() => navigate('/packer')}>📋 Packer View</button>
-          <button className="nav-item" onClick={() => navigate('/dashboard')}>🖥️ Dashboard</button>
-          <button className="nav-item" onClick={() => navigate('/')}>🏠 Home</button>
-        </nav>
-        <div style={{ padding: '16px', borderTop: '1px solid var(--border)' }}>
-          <div className="flex items-center gap-sm" style={{ marginBottom: 6 }}>
-            <span className={`status-dot ${connected ? 'cyan' : 'red'}`} />
-            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-              {connected ? 'Live Connected' : 'Offline'}
-            </span>
+          <div style={{ fontSize: '0.8rem', color: '#111' }}>
+            <span style={{ fontWeight: 700 }}>Home</span> - Delivery Location
           </div>
-        </div>
-      </aside>
+        </header>
 
-      {/* Main */}
-      <main className="main-content">
-        {/* Order ID input */}
-        <div className="glass-card customer-id-card">
-          <form onSubmit={handleLoadOrder} className="order-id-form">
-            <div className="form-group" style={{ flex: 1 }}>
-              <label className="form-label">Order ID</label>
-              <input
-                className="form-input"
-                placeholder="Paste your MongoDB order ID…"
-                value={inputId}
-                onChange={e => setInputId(e.target.value)}
-                id="order-id-input"
+        {/* Load Order Form if none loaded */}
+        {!order && (
+          <div className="bk-card">
+            <div className="bk-title">Track your order</div>
+            <form onSubmit={handleLoadOrder} className="bk-form-group">
+              <input 
+                className="bk-input" 
+                placeholder="Enter Order ID" 
+                value={inputId} 
+                onChange={e => setInputId(e.target.value)} 
               />
-            </div>
-            <button className="btn btn-primary" type="submit" style={{ marginTop: 24 }}>
-              Load Order →
-            </button>
-          </form>
-          {error && <div style={{ color: 'var(--red)', fontSize: '0.875rem', marginTop: 8 }}>{error}</div>}
-        </div>
-
-        {loading && (
-          <div className="flex items-center gap-md" style={{ padding: '40px 0' }}>
-            <div className="spinner" />
-            <span className="text-secondary">Loading order…</span>
+              <button className="bk-btn" type="submit">Track</button>
+            </form>
+            {error && <div style={{ color: 'red', fontSize: '0.8rem', marginTop: 8 }}>{error}</div>}
           </div>
         )}
 
-        {order && (
-          <div className="customer-layout">
-            {/* Left column */}
-            <div className="customer-left">
-              {/* Status header */}
-              <div className="glass-card order-status-card">
-                <div className="flex items-center justify-between mb-md">
-                  <div>
-                    <h2 className="section-title">Order #{order._id.slice(-8).toUpperCase()}</h2>
-                    <div className="text-muted text-mono" style={{ fontSize: '0.75rem', marginTop: 4 }}>
-                      Customer: {order.customerId}
-                    </div>
-                  </div>
-                  <span className={`badge badge-${order.status}`}>
-                    {STATUS_LABELS[order.status]?.icon} {order.status.replace('_', ' ').toUpperCase()}
-                  </span>
-                </div>
+        {loading && <div style={{ textAlign: 'center', padding: '40px' }}>Loading...</div>}
 
-                {/* Timeline */}
-                <div className="timeline" style={{ marginTop: 24 }}>
-                  {STATUS_STEPS.map((step, i) => {
-                    const info = STATUS_LABELS[step]
-                    const isDone = i < stepIndex
-                    const isActive = i === stepIndex
-                    return (
-                      <div className="timeline-step" key={step}>
-                        <div className={`timeline-dot ${isDone ? 'done' : isActive ? 'active' : ''}`}>
-                          {isDone ? <span style={{ color: 'var(--jade)', fontSize: 12 }}>✓</span>
-                            : isActive ? <span style={{ color: 'var(--cyan)', fontSize: 12 }}>●</span>
-                            : <span style={{ color: 'var(--text-muted)', fontSize: 10 }}>○</span>}
-                        </div>
-                        <div className="timeline-content">
-                          <div style={{ fontWeight: 600, fontSize: '0.9375rem' }}>{info.icon} {info.label}</div>
-                          {isActive && (
-                            <motion.div
-                              initial={{ opacity: 0 }}
-                              animate={{ opacity: 1 }}
-                              style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', marginTop: 4 }}
-                            >
-                              {info.desc}
-                            </motion.div>
-                          )}
-                        </div>
-                      </div>
-                    )
-                  })}
+        {order && (
+          <div style={{ paddingBottom: 40 }}>
+            {/* ETA Banner */}
+            <div className="bk-card" style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+              <div style={{ fontSize: '2.5rem' }}>⏱️</div>
+              <div>
+                <div style={{ fontSize: '1.2rem', fontWeight: 800, color: '#111' }}>Arriving in 10 mins</div>
+                <div style={{ fontSize: '0.8rem', color: '#666', marginTop: 4 }}>
+                  Order #{order._id.slice(-8).toUpperCase()} • {connected ? '🟢 Live' : '🔴 Offline'}
                 </div>
               </div>
-
-              {/* Camera zone */}
-              {(order.status === 'packing' || order.status === 'placed') && currentZone && (
-                <div className="glass-card" style={{ padding: 24 }}>
-                  <div className="section-header">
-                    <h3 className="section-title" style={{ fontSize: '1rem' }}>
-                      📡 Live Camera Feed
-                    </h3>
-                    <span className="badge badge-cyan">{currentZone.zoneId}</span>
-                  </div>
-                  <CameraZoneView zoneId={currentZone.zoneId} streamUrl={currentZone.streamUrl} />
-                  <p className="text-secondary" style={{ fontSize: '0.8125rem', marginTop: 12 }}>
-                    Watching warehouse zone where your items are being picked and scanned.
-                  </p>
-                </div>
-              )}
-
-              {/* QR Verification */}
-              {(order.status === 'packed' || order.status === 'in_transit' || order.status === 'delivered') && (
-                <div className="glass-card qr-section">
-                  <h3 className="section-title" style={{ fontSize: '1rem', marginBottom: 16 }}>🔒 Delivery QR Verification</h3>
-                  {order.status === 'delivered' || verifyResult?.status === 'VERIFIED' ? (
-                    <div className="verify-success">
-                      <div style={{ fontSize: '2.5rem' }}>✅</div>
-                      <div className="text-jade" style={{ fontWeight: 700, fontSize: '1.25rem', fontFamily: 'var(--font-heading)' }}>Delivery Confirmed</div>
-                      <div className="text-secondary" style={{ fontSize: '0.875rem' }}>
-                        Your delivery was verified successfully. The QR token has been consumed.
-                      </div>
-                    </div>
-                  ) : (
-                    <>
-                      {qrData && (
-                        <div className="qr-display">
-                          <QRCodeSVG
-                            value={qrData.tokenHash}
-                            size={180}
-                            fgColor="#00d4ff"
-                            bgColor="transparent"
-                            level="H"
-                          />
-                          <div className="text-muted text-mono" style={{ fontSize: '0.7rem', marginTop: 8, wordBreak: 'break-all', maxWidth: 200 }}>
-                            {qrData.tokenHash.slice(0, 32)}…
-                          </div>
-                        </div>
-                      )}
-                      <div style={{ marginTop: 16 }}>
-                        <div className="form-group">
-                          <label className="form-label">Enter token to verify delivery</label>
-                          <input
-                            className="form-input"
-                            placeholder="Paste QR token hash…"
-                            value={tokenInput}
-                            onChange={e => setTokenInput(e.target.value)}
-                            id="token-input"
-                          />
-                        </div>
-                        {qrData && (
-                          <button
-                            className="btn btn-ghost btn-sm"
-                            style={{ marginTop: 8, fontSize: '0.75rem' }}
-                            onClick={() => setTokenInput(qrData.tokenHash)}
-                          >
-                            ↑ Auto-fill (demo)
-                          </button>
-                        )}
-                        <button
-                          className="btn btn-jade"
-                          style={{ marginTop: 12, width: '100%' }}
-                          onClick={handleVerify}
-                          disabled={!tokenInput}
-                          id="verify-btn"
-                        >
-                          Verify Delivery
-                        </button>
-                        {verifyResult && verifyResult.status !== 'VERIFIED' && (
-                          <div className="verify-error">
-                            ⚠️ {verifyResult.status}: {verifyResult.message}
-                          </div>
-                        )}
-                      </div>
-                    </>
-                  )}
-                </div>
-              )}
             </div>
 
-            {/* Right column */}
-            <div className="customer-right">
-              {/* Items list */}
-              <div className="glass-card" style={{ padding: 24 }}>
-                <h3 className="section-title" style={{ fontSize: '1rem', marginBottom: 16 }}>🛒 Order Items</h3>
-                <div className="items-list">
-                  {order.items.map((item, i) => (
-                    <div className="item-row" key={i}>
-                      <div>
-                        <div style={{ fontWeight: 500 }}>{item.name}</div>
-                        <div className="text-muted text-mono" style={{ fontSize: '0.75rem' }}>{item.productId}</div>
+            {/* Timeline */}
+            <div className="bk-card">
+              <div className="bk-timeline">
+                {STATUS_STEPS.map((step, i) => {
+                  const info = STATUS_LABELS[step]
+                  const isDone = i < stepIndex
+                  const isActive = i === stepIndex
+                  return (
+                    <div className={`bk-timeline-step ${isDone ? 'completed' : ''}`} key={step}>
+                      <div className={`bk-dot ${isDone ? 'completed' : isActive ? 'active' : ''}`}>
+                        {isDone ? '✓' : ''}
                       </div>
-                      <div className="flex items-center gap-sm">
-                        <span className="badge badge-muted">×{item.quantity}</span>
-                        <span className="badge badge-cyan" style={{ fontSize: '0.7rem' }}>{item.zoneCamera?.zoneId}</span>
+                      <div className="bk-step-content">
+                        <div className="bk-step-title">{info.label}</div>
+                        {(isActive || isDone) && (
+                          <div className="bk-step-desc">{info.subtitle}</div>
+                        )}
                       </div>
                     </div>
-                  ))}
-                </div>
+                  )
+                })}
               </div>
+            </div>
 
-              {/* Scan logs */}
-              <div className="glass-card" style={{ padding: 24 }}>
-                <div className="section-header">
-                  <h3 className="section-title" style={{ fontSize: '1rem' }}>🤖 AI Scan Results</h3>
-                  <span className="badge badge-muted">{scanLogs.length}</span>
+            {/* Safe Guard Anti-Fraud Block */}
+            <div className="bk-card" style={{ padding: 0, border: 'none' }}>
+              <div className="guard-box">
+                <div className="guard-header">
+                  <span>🛡️ Secured by ChainGuard AI</span>
+                  <span>Verifying...</span>
                 </div>
-                {scanLogs.length === 0 ? (
-                  <div className="text-secondary" style={{ fontSize: '0.875rem', textAlign: 'center', padding: '24px 0' }}>
-                    Scan results appear here in real-time as items are verified.
-                  </div>
-                ) : (
-                  <div className="scan-logs">
-                    <AnimatePresence>
-                      {scanLogs.map((s, i) => (
-                        <ScanProofCard key={i} scan={s} index={i} />
-                      ))}
-                    </AnimatePresence>
+                
+                {/* Live Camera (if packing) */}
+                {(order.status === 'packing' || order.status === 'placed') && currentZone && (
+                  <CameraZoneView zoneId={currentZone.zoneId} streamUrl={currentZone.streamUrl} />
+                )}
+
+                {/* Scan Logs */}
+                {scanLogs.length > 0 && (
+                  <div style={{ padding: '0 16px' }}>
+                    {scanLogs.map((s, i) => <ScanProofCard key={i} scan={s} />)}
                   </div>
                 )}
               </div>
             </div>
+
+            {/* QR Verification Hand-off (Only shown when out for delivery or packed) */}
+            {(order.status === 'packed' || order.status === 'in_transit' || order.status === 'delivered') && (
+              <div className="bk-card bk-verify-card">
+                {order.status === 'delivered' || verifyResult?.status === 'VERIFIED' ? (
+                  <div className="bk-success">
+                    <div className="bk-success-icon">✓</div>
+                    <div className="bk-success-title">Order Delivered</div>
+                    <div style={{ fontSize: '0.85rem', color: '#666', marginTop: 8 }}>
+                      Cryptographically verified via ChainGuard.
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <div className="bk-title">Delivery Verification</div>
+                    <div style={{ fontSize: '0.85rem', color: '#666' }}>
+                      Show this QR code to your delivery partner. It proves the bag seal is intact.
+                    </div>
+                    {qrData && (
+                      <div className="qr-center">
+                        <div className="qr-box">
+                          <QRCodeSVG value={qrData.tokenHash} size={150} fgColor="#111" />
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* Demo token entry */}
+                    <div style={{ marginTop: 24, borderTop: '1px solid #eee', paddingTop: 16 }}>
+                      <div style={{ fontSize: '0.8rem', color: '#666', marginBottom: 8 }}>Partner Demo Flow:</div>
+                      <div className="bk-form-group" style={{ flexDirection: 'column' }}>
+                        <input
+                          className="bk-input"
+                          placeholder="Delivery Partner scans QR..."
+                          value={tokenInput}
+                          onChange={e => setTokenInput(e.target.value)}
+                        />
+                        {qrData && (
+                          <button className="bk-btn" style={{ background: '#eee', padding: 8 }} onClick={() => setTokenInput(qrData.tokenHash)}>
+                            Auto-fill QR Hash
+                          </button>
+                        )}
+                        <button className="bk-btn bk-btn-green" onClick={handleVerify} disabled={!tokenInput}>
+                          Complete Delivery
+                        </button>
+                      </div>
+                      {verifyResult && verifyResult.status !== 'VERIFIED' && (
+                        <div style={{ color: '#e02424', fontSize: '0.8rem', marginTop: 8, padding: 8, background: '#fdefef', borderRadius: 4 }}>
+                          ⚠️ {verifyResult.message}
+                        </div>
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+
+            {/* Order Items Summary */}
+            <div className="bk-card">
+              <div className="bk-title">Bill Summary</div>
+              {order.items.map((item, i) => (
+                <div className="bk-item" key={i}>
+                  <div style={{ fontSize: '0.9rem', color: '#333' }}>{item.name}</div>
+                  <div style={{ fontSize: '0.8rem', color: '#666', background: '#f4f4f4', padding: '2px 8px', borderRadius: 4 }}>
+                    Qty: {item.quantity}
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            <div style={{ textAlign: 'center', marginTop: 24, paddingBottom: 24 }}>
+              <button 
+                onClick={() => navigate('/')}
+                style={{ background: 'none', border: 'none', color: '#007bb5', fontSize: '0.9rem', cursor: 'pointer', fontWeight: 600 }}
+              >
+                ← Back to ChainGuard System
+              </button>
+            </div>
           </div>
         )}
-      </main>
+      </div>
     </div>
   )
 }

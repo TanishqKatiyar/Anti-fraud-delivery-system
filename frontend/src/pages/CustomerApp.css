@@ -1,128 +1,241 @@
-/* CustomerApp.css */
+/* frontend/src/pages/CustomerApp.css */
 
-.customer-app {
-  display: flex;
+/* Override dark mode global variables for the Customer View specifically */
+.customer-app-wrapper {
+  background-color: #f1f3f6; /* Very light gray */
+  color: #1c1c1c;
   min-height: 100vh;
-}
-
-.customer-id-card {
-  padding: 24px;
-  margin-bottom: 24px;
-}
-
-.order-id-form {
   display: flex;
-  align-items: flex-end;
+  justify-content: center;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Mobile Constraint Container */
+.blinkit-mobile-container {
+  width: 100%;
+  max-width: 480px;
+  background-color: #f1f3f6;
+  min-height: 100vh;
+  position: relative;
+  box-shadow: 0 0 20px rgba(0,0,0,0.05);
+}
+
+/* Blinkit Header */
+.blinkit-header {
+  background-color: #f8cb46;
+  padding: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.blinkit-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.blinkit-brand {
+  font-weight: 800;
+  font-size: 1.5rem;
+  letter-spacing: -0.5px;
+  color: #1a1a1a;
+}
+
+.blinkit-time {
+  font-weight: 700;
+  font-size: 0.9rem;
+  background: white;
+  padding: 4px 10px;
+  border-radius: 8px;
+  color: #333;
+}
+
+/* Base Card */
+.bk-card {
+  background: #ffffff;
+  border-radius: 12px;
+  margin: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.bk-title {
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+  color: #222;
+}
+
+/* Form specifically for Order Loading */
+.bk-form-group {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+.bk-input {
+  flex: 1;
+  border: 1px solid #ddd;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #333;
+  background: #fff;
+}
+.bk-btn {
+  background: #f8cb46;
+  color: #111;
+  border: none;
+  font-weight: 700;
+  padding: 12px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.bk-btn:hover { background: #eab72f; }
+
+/* Timeline Tracker */
+.bk-timeline {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0;
+}
+
+.bk-timeline-step {
+  display: flex;
   gap: 16px;
+  position: relative;
+  padding-bottom: 24px;
 }
+.bk-timeline-step:last-child { padding-bottom: 0; }
 
-.customer-layout {
-  display: grid;
-  grid-template-columns: 1fr 380px;
-  gap: 24px;
+.bk-timeline-step::after {
+  content: '';
+  position: absolute;
+  top: 24px;
+  left: 11px;
+  bottom: 0;
+  width: 2px;
+  background: #eaeaea;
 }
+.bk-timeline-step:last-child::after { display: none; }
+.bk-timeline-step.completed::after { background: #0e9f6e; }
 
-@media (max-width: 1100px) {
-  .customer-layout { grid-template-columns: 1fr; }
-}
-
-.customer-left, .customer-right {
+.bk-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #eaeaea;
   display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.order-status-card { padding: 24px; }
-
-.qr-section { padding: 24px; }
-
-.qr-display {
-  display: flex;
-  flex-direction: column;
   align-items: center;
-  padding: 24px;
-  border: 1px solid var(--border-cyan);
-  border-radius: var(--radius-md);
-  background: rgba(0,212,255,0.03);
+  justify-content: center;
+  font-size: 12px;
+  z-index: 2;
+}
+.bk-dot.active { background: #f8cb46; color: #111; }
+.bk-dot.completed { background: #0e9f6e; color: white; }
+
+.bk-step-content {
+  flex: 1;
+}
+.bk-step-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #333;
+}
+.bk-step-desc {
+  font-size: 0.8rem;
+  color: #777;
+  margin-top: 4px;
+  line-height: 1.4;
 }
 
-.verify-success {
+/* Guard Premium Feature Module */
+.guard-box {
+  border: 1px solid rgba(0, 212, 255, 0.4);
+  background: linear-gradient(180deg, #f0fbff 0%, #ffffff 100%);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.guard-header {
+  background: #f0fbff;
+  padding: 10px 16px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #007bb5;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  padding: 32px;
-  text-align: center;
+  justify-content: space-between;
 }
 
-.verify-error {
-  margin-top: 12px;
-  padding: 10px 14px;
-  background: var(--red-glow);
-  border: 1px solid rgba(255, 69, 84, 0.3);
-  border-radius: var(--radius-sm);
-  color: var(--red);
-  font-size: 0.875rem;
+.bk-camera-zone {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: #111;
 }
 
-.items-list {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.item-row {
+/* Scan Log List within Blinkit */
+.bk-scan-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 12px;
-  border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--border);
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
 }
+.bk-scan-row:last-child { border-bottom: none; }
+.bk-scan-icon { font-size: 1.2rem; }
+.bk-scan-proof { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; border: 1px solid #ddd; }
 
-.item-row:hover {
-  background: rgba(255, 255, 255, 0.04);
-}
-
-.scan-logs {
+/* Item List */
+.bk-item {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  max-height: 400px;
-  overflow-y: auto;
-}
-
-.scan-card {
-  display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 12px;
-  padding: 10px 14px;
-  border-radius: var(--radius-sm);
-  border: 1px solid;
-  font-size: 0.875rem;
+  padding: 12px 0;
+  border-bottom: 1px dashed #eee;
+}
+.bk-item:last-child { border-bottom: none; }
+
+/* QR Verifier Card */
+.bk-verify-card {
+  background: #ffffff;
+  border-top: 3px solid #0e9f6e;
 }
 
-.scan-card--approved {
-  background: rgba(0, 255, 136, 0.05);
-  border-color: rgba(0, 255, 136, 0.2);
+.bk-success {
+  text-align: center;
+  padding: 24px 0;
+}
+.bk-success-icon {
+  font-size: 40px;
+  color: #0e9f6e;
+}
+.bk-success-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #111;
+  margin-top: 12px;
 }
 
-.scan-card--rejected {
-  background: rgba(255, 69, 84, 0.05);
-  border-color: rgba(255, 69, 84, 0.2);
+.qr-center {
+  display: flex;
+  justify-content: center;
+  margin: 16px 0;
+}
+.qr-box {
+  padding: 16px;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
-.scan-card-icon { font-size: 1.125rem; flex-shrink: 0; }
-.scan-card-id { font-weight: 500; font-family: var(--font-mono); font-size: 0.8rem; }
-.scan-card-status { font-size: 0.8125rem; font-weight: 600; }
-.scan-card-time { font-size: 0.7rem; margin-top: 2px; }
-
-.scan-card-proof {
-  margin-left: auto;
-  width: 60px;
-  height: 45px;
-  border-radius: 4px;
-  object-fit: cover;
-  border: 1px solid var(--border);
+.bk-btn-green {
+  background: #0e9f6e;
+  color: white;
 }
+.bk-btn-green:hover { background: #0c8a5f; }
+.bk-btn-green:disabled { background: #9cdabc; cursor: not-allowed; }
