@@ -33,7 +33,7 @@ To see the live action, check out our demonstration recording displaying the Cus
 
 ---
 
-## ✨ Core Features Features
+## ✨ Core Features
 
 ### 1. 🤖 AI-Powered Warehouse Fulfillment
 The packing process is verified via our **Omni-Scanner** interface. Every item goes under the camera and receives an instant pass/fail validation.
@@ -78,8 +78,8 @@ ChainGuard is entirely containerized. With Docker Desktop installed, you can lau
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yourusername/anti-fraud-supply-chain.git
-   cd anti-fraud-supply-chain
+   git clone https://github.com/TanishqKatiyar/Anti-fraud-delivery-system.git
+   cd Anti-fraud-delivery-system
    ```
 
 2. **Launch the stack:**
